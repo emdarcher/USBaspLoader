@@ -71,7 +71,7 @@ these macros are defined, the boot loader usees them.
 
 #ifndef USB_CFG_DMINUS_BIT
   /* This is Revision 3 and later (where PD6 and PD7 were swapped */
-  #define USB_CFG_DMINUS_BIT      7    /* Rev.2 and previous was 6 */
+  #define USB_CFG_DMINUS_BIT      3    /* Rev.2 and previous was 6 */
 #endif
 /* This is the bit number in USB_CFG_IOPORT where the USB D- line is connected.
  * This may be any bit in the port.
@@ -91,11 +91,28 @@ these macros are defined, the boot loader usees them.
  */
 #ifndef JUMPER_BIT
   /* This is Revision 3 and later (where PD6 and PD7 were swapped */
-  #define JUMPER_BIT           6       /* Rev.2 and previous was 7 */
+  #define JUMPER_BIT           5       /* Rev.2 and previous was 7 */
 #endif
 /* 
  * jumper is connected to this bit in port "JUMPER_PORT", active low
  */
+
+
+//set this to 1 to use an indicator LED for the bootloader
+#define USE_INDICATOR_LED       1
+
+#ifndef LED_PORT
+  #define LED_PORT		USB_CFG_IOPORTNAME
+#endif
+/*
+* Bootloader indicator LED port
+*/
+#ifndef LED_BIT
+  #define LED_BIT              0
+#endif
+/*
+* Bootloader indicator LED bit
+*/
 
 #define USB_CFG_CLOCK_KHZ       (F_CPU/1000)
 /* Clock rate of the AVR in MHz. Legal values are 12000, 16000 or 16500.
@@ -591,6 +608,11 @@ static inline void  bootLoaderInit(void)
     PIN_PORT(JUMPER_PORT) = (1<< PIN(JUMPER_PORT, JUMPER_BIT)); /* activate pull-up */
 #endif
 
+#if (USE_INDICATOR_LED)
+   PIN_DDR(LED_PORT) |= _BV(LED_BIT);
+   PIN_PORT(LED_PORT) |= _BV(LED_BIT);
+#endif
+
 //     deactivated by Stephan - reset after each avrdude op is annoing!
 //     if(!(MCUCSR & (1 << EXTRF)))    /* If this was not an external reset, ignore */
 //         leaveBootloader();
@@ -601,6 +623,11 @@ static inline void  bootLoaderExit(void)
 #if (BOOTLOADER_IGNOREPROGBUTTON)
 #else
     PIN_PORT(JUMPER_PORT) = 0;		/* undo bootLoaderInit() changes */
+#endif
+
+#if (USE_INDICATOR_LED)
+	PIN_PORT(LED_PORT) = 0;
+	PIN_DDR(LED_PORT) = 0;
 #endif
 }
 
