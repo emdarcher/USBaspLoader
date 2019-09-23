@@ -17,7 +17,7 @@
 #endif
 
 
-extern const uint16_t usbasploader[SIZEOF_new_firmware>>1] PROGMEM;
+extern const const uint16_t usbasploader[SIZEOF_new_firmware>>1] PROGMEM;
 const uint8_t *new_firmware	=	(void*)&usbasploader;
 
 #endif

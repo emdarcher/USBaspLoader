@@ -5,8 +5,8 @@
 # Tabsize: 4
 # License: GNU GPL v2 (see License.txt)
 
-F_CPU = 12000000
-DEVICE = atmega32
+F_CPU = 16000000
+DEVICE = atmega8
 
 # where the updating firmware should be located (starting address)
 FLASHADDRESS = 0x0000
